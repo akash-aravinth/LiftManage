@@ -1,17 +1,14 @@
 import java.util.ArrayList;
 import java.util.List;
-import java.util.concurrent.ExecutorService;
 
 public class RequestThread implements Runnable{
     private int source;
     private int destination;
     private Database database;
-    private ExecutorService service;
-    public RequestThread(int source, int destination, Database database, ExecutorService service){
+    public RequestThread(int source, int destination, Database database){
         this.source = source;
         this.destination = destination;
         this.database = database;
-        this.service = service;
     }
     @Override
     public void run() {
@@ -54,22 +51,30 @@ public class RequestThread implements Runnable{
 
     private void bookLift(Lift lift, int destination) {
             if (lift.getType().equals("all")){
-                while (lift.getCurrentPos() != destination){
-                    try {
-                        Thread.sleep(5000);
-                    } catch (InterruptedException e) {
-                        throw new RuntimeException(e);
-                    }
-                    lift.setCurrentPos(lift.getCurrentPos()+1);
-                    if (lift.getCurrentPos() <= destination){
+                if (lift.getCurrentPos() <= destination){
+                    while (lift.getCurrentPos() < destination){
+                        try {
+                            Thread.sleep(5000);
+                        } catch (InterruptedException e) {
+                            throw new RuntimeException(e);
+                        }
+                        lift.setCurrentPos(lift.getCurrentPos()+1);
                         lift.setDirection("up");
-                    }else{
+                    }
+                }else{
+                    while (lift.getCurrentPos() > destination){
+                        try {
+                            Thread.sleep(5000);
+                        } catch (InterruptedException e) {
+                            throw new RuntimeException(e);
+                        }
+                        lift.setCurrentPos(lift.getCurrentPos()-1);
                         lift.setDirection("down");
                     }
                 }
             }else{
                 if (lift.getCurrentPos() <= destination){
-                    while (lift.getCurrentPos() <= destination){
+                    while (lift.getCurrentPos() < destination){
                         try{
                             Thread.sleep(5000);
                         }catch (Exception e){
@@ -79,7 +84,7 @@ public class RequestThread implements Runnable{
                         lift.setCurrentPos(lift.getCurrentPos()+2);
                     }
                 }else{
-                    while (lift.getCurrentPos() >= destination){
+                    while (lift.getCurrentPos() > destination){
                         try{
                             Thread.sleep(5000);
                         }catch (Exception e){

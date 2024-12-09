@@ -17,7 +17,7 @@ public class LiftManagement {
                     int source = scanner.nextInt();
                     System.out.println("Enter Destination");
                     int destination = scanner.nextInt();
-                    service.submit(new RequestThread(source,destination,database,service));
+                    service.submit(new RequestThread(source,destination,database));
                     break;
                 }
                 case 2 : {
